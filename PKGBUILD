@@ -1,12 +1,16 @@
-pkgname=('llvm' 'llvm-libs')
-pkgver=21.1.0
-pkgrel=1
+pkgname=(
+    'llvm'
+    'llvm-libs'
+)
+pkgver=21.1.3
+pkgrel=2
 arch=('x86_64')
 url="https://llvm.org/"
 license=('Apache-2.0 WITH LLVM-exception')
 makedepends=(
     'cmake'
     'curl'
+    'libedit'
     'libffi'
     'libxml2'
     'ninja'
@@ -21,9 +25,9 @@ options=('!staticlibs' '!lto') # tools/llvm-shlib/typeids.test fails with LTO
 source=(https://github.com/llvm/llvm-project/releases/download/llvmorg-${pkgver}/llvm-${pkgver}.src.tar.xz
     https://github.com/llvm/llvm-project/releases/download/llvmorg-${pkgver}/cmake-${pkgver}.src.tar.xz
     https://github.com/llvm/llvm-project/releases/download/llvmorg-${pkgver}/third-party-${pkgver}.src.tar.xz)
-sha256sums=(0582ee18cb6e93f4e370cb4aa1e79465ba1100408053e1ff8294cef7fb230bd8
-    528347c84c3571d9d387b825ef8b07c7ad93e9437243c32173838439c3b6028f
-    60b3d8c2d1d8d43a705f467299144d232b8061a10541eaa3b0d6eaa2049a462f)
+sha256sums=(a80f2dbfa24a0c4d81089e6245936dcd0c662c90f643d1706bb44e7bc8338ff1
+    4db6f028b6fe360f0aeae6e921b2bd2613400364985450a6d3e6749b74bf733a
+    2bae76a7c7db4096b921589ae94c030727ee0dcb600bfe40353878937af61aa0)
 
 # Utilizing LLVM_DISTRIBUTION_COMPONENTS to avoid
 # installing static libraries; inspired by Gentoo
@@ -112,7 +116,11 @@ build() {
 
 package_llvm() {
     pkgdesc="Compiler infrastructure"
-    depends=('llvm-libs' 'curl' 'perl')
+    depends=(
+        'llvm-libs'
+        'curl'
+        'perl'
+    )
 
     cd llvm-${pkgver}.src
 
@@ -133,7 +141,14 @@ package_llvm() {
 
 package_llvm-libs() {
     pkgdesc="LLVM runtime libraries"
-    depends=('gcc-libs' 'zlib' 'zstd' 'libffi' 'libxml2')
+    depends=(
+        'gcc-libs'
+        'libedit'
+        'libffi'
+        'libxml2'
+        'zlib'
+        'zstd'
+    )
 
     mv ${pkgname}/* ${pkgdir}
 
